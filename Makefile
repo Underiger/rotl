@@ -7,7 +7,7 @@ RV_FLAGS = -march=rv32im -mabi=ilp32 -ffreestanding -Isrc/include
 BUILD   = build
 VECTORS = src/tests/rotl_vectors.csv
 
-.PHONY: all test test-c test-ubsan test-py ub-demo asm counts encode clean
+.PHONY: all test test-c test-ubsan test-py ub-demo asm counts encode verify clean
 
 all: test
 
@@ -49,6 +49,15 @@ counts:
 # CP3:印出編碼範例
 encode:
 	$(PYTHON) tools/rotl_isa.py
+
+# 效能驗證(見 experiments/README.md)
+verify: | $(BUILD)
+	$(PYTHON) experiments/ic_crosscheck.py
+	$(PYTHON) experiments/pipeline_cycles.py
+	@if [ "$$(uname -m)" = "arm64" ] || [ "$$(uname -m)" = "aarch64" ]; then \
+		$(CC) -O2 -std=gnu11 -Wall -Wextra -Werror -o $(BUILD)/arm64_rotate_bench experiments/arm64_rotate_bench.c && \
+		./$(BUILD)/arm64_rotate_bench; \
+	else echo "skip arm64_rotate_bench: not an ARM64 machine"; fi
 
 $(BUILD):
 	mkdir -p $(BUILD)
