@@ -1,0 +1,17 @@
+id,rs1,rs2,expected,category,note
+T01,0x80000001,0x00000001,0x00000003,spec,HOMEWORK 6.4 測資:最高位繞回最低位
+T02,0x12345678,0x00000000,0x12345678,boundary,HOMEWORK 6.4 測資:n = 0 時 rd = rs1
+T03,0x000000FF,0x00000008,0x0000FF00,spec,HOMEWORK 6.4 測資:整個 byte 左移
+T04,0x12345678,0x0000001F,0x091A2B3C,boundary,n = 31 為最大移位量(等於右旋 1 位)
+T05,0x12345678,0x00000020,0x12345678,boundary,rs2 = 32 取低 5 位元後 n = 0
+T06,0x12345678,0x00000021,0x2468ACF0,boundary,rs2 = 33 取低 5 位元後 n = 1
+T07,0x12345678,0xFFFFFFFF,0x091A2B3C,boundary,rs2 = -1 取低 5 位元後 n = 31
+T08,0x12345678,0xFFFFFFE4,0x23456781,boundary,rs2 = -28 取低 5 位元後 n = 4
+T09,0x00000000,0x0000000D,0x00000000,boundary,全 0 輸入旋轉後仍為 0
+T10,0xFFFFFFFF,0x00000011,0xFFFFFFFF,boundary,全 1 輸入旋轉後仍為全 1
+T11,0x80000000,0x00000001,0x00000001,boundary,只有最高位為 1:繞回 bit 0
+T12,0x00000001,0x0000001F,0x80000000,boundary,只有最低位為 1:旋到 bit 31
+T13,0x12345678,0x00000010,0x56781234,general,旋轉 16 位等於交換高低半字
+T14,0x12345678,0x00000004,0x23456781,general,旋轉 4 位等於 nibble 循環
+T15,0xDEADBEEF,0x0000000C,0xDBEEFDEA,general,一般值,移位 12 位
+T16,0xA5A5A5A5,0x00000001,0x4B4B4B4B,general,交錯位元樣式
