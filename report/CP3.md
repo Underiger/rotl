@@ -177,8 +177,8 @@ RC5 金鑰排程的旋轉次數最多,但大部分指令花在載入、儲存、
 
 ### 3.5 限制
 
-1. 指令數來自本組的模擬器,不是 Spike 或 RTL;模擬器的正確性以公開測試向量與黃金模型驗證
-2. 只比較指令數(IC)。實際執行時間還取決於 CPI 與 clock cycle time,要等 CP4–CP6 學到 datapath 與 pipeline 後才能分析
+1. 指令數來自本組的模擬器,不是 Spike 或 RTL;模擬器的正確性以公開測試向量與黃金模型驗證,另外也用反組譯結果手算交叉驗證(見 [`experiments/`](../experiments/README.md) 驗證 1)
+2. 只比較指令數(IC)。實際執行時間還取決於 CPI 與 clock cycle time,要等 CP4–CP6 學到 datapath 與 pipeline 後才能分析。超出本次範圍的初步估計(5 級 pipeline 模型、ARM64 實機量測)放在 [`experiments/`](../experiments/README.md),不屬於 CP3 的繳交內容
 3. 結果針對 GCC 16.2.0 `-O2`。換編譯器版本或最佳化等級,基準的指令數可能不同
 4. funct3 / funct7 為暫定值。改變編碼不影響指令數,只影響機器碼
 

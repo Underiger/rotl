@@ -19,7 +19,7 @@ CHACHA_RFC_OUT = [
 # Rivest 1994,RC5-32/12/16,key = 0、明文 = 0
 RC5_KEY = [0, 0, 0, 0]
 RC5_PT = [0, 0]
-RC5_PAPER_CT = [0xEEDBA521, 0x6D8F4B15]  # 論文中的位元組 21A5DBEE 154B8F6D(little-endian)
+RC5_PAPER_CT = [0xEEDBA521, 0x6D8F4B15]  # 論文附錄(p. 96)第 1 組:印出的兩個 32-bit word
 
 RC5_ROUNDS = 12
 RC5_TABLE = 2 * (RC5_ROUNDS + 1)

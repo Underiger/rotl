@@ -32,6 +32,7 @@ R-type,custom-0(`0001011`)。funct3 / funct7 **待教師分配**,目前為暫定
 │   ├── tests/                16 組測資 CSV
 │   └── rv32im/               CP2–CP3:組合語言、密碼學核心
 ├── tools/                    黃金模型、RV32IM 模擬器、量測腳本、Python 測試
+├── experiments/              效能驗證:IC 交叉驗證、5 級 pipeline 模型、ARM64 實機量測
 └── report/
     ├── CP1.md  CP2.md  CP3.md
     └── figures/              make counts 產生的數據表
@@ -47,6 +48,7 @@ make counts    # 重新量測指令數,寫入 report/figures/
 make encode    # 印出 rotl 的機器碼範例
 make asm       # 產生編譯器輸出的組合語言 build/rotl_O0.s、build/rotl_O2.s
 make ub-demo   # 反例:未處理 n = 0 的寫法(預期報錯)
+make verify    # 效能驗證(見 experiments/README.md;ARM64 實機量測只在 ARM64 電腦執行)
 ```
 
 ## 目前結果
@@ -60,6 +62,8 @@ make ub-demo   # 反例:未處理 n = 0 的寫法(預期報錯)
 | ChaCha20 區塊 | 1919 | 1284 | 1.49x |
 | RC5 金鑰排程 | 2467 | 2000 | 1.23x |
 | RC5 加密一個區塊 | 227 | 131 | 1.73x |
+
+- 效能驗證([`experiments/`](experiments/README.md)):IC 以反組譯手算交叉驗證一致;5 級 pipeline 模型的 cycle 比 1.21x–1.67x;ARM64 實機用旋轉指令 `ror` 快 1.29x–1.52x(旁證)。前提是 ROTL 不拉長 clock period,待 CP4 確認
 
 ## Git 規則(HOMEWORK.md 5.1)
 
