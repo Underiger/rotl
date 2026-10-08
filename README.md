@@ -2,6 +2,8 @@
 
 計算機組織 2026 學期專題。課程說明見 [DevSecOpsLab-CSIE-NPU/2026-Computer-Architecture](https://github.com/DevSecOpsLab-CSIE-NPU/2026-Computer-Architecture)。
 
+> 本 repo 由 fork [Underiger/2026-Computer-Architecture](https://github.com/Underiger/2026-Computer-Architecture) 的 `group-ROTL/` 於 2026-10-08 搬移而來,保留了 commit 歷史。當時的 PR 討論(#1–#7)留在該 fork 中,fork 已不再更新,之後的修改都在本 repo 進行。
+
 ```
 rotl rd, rs1, rs2      n = rs2 & 31;  rd = n == 0 ? rs1 : (rs1 << n) | (rs1 >> (32 − n))
 ```
@@ -68,4 +70,5 @@ make verify    # 效能驗證(見 experiments/README.md;ARM64 實機量測只在
 ## Git 規則(HOMEWORK.md 5.1)
 
 - 每位組員在 `dev/<學號>` 分支開發,不直接推送到 `main`
+- `main` 已設定分支保護:只能透過 PR 合併,不能直接推送、force push 或刪除(擁有者也一樣)
 - Checkpoint 截止前由組長開 PR 合併到 `main`,並打 tag:`cp1-submit`、`cp2-submit`、`cp3-submit`
