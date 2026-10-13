@@ -1,5 +1,7 @@
 # groupXX:ROTL(32-bit 循環左移)
 
+![Claude 吉祥物把 funct7、rs2、rs1、funct3、rd、opcode 六個欄位搬進 32-bit 指令,組出 rotl a0, a1, a2 的機器碼 0x1EC5850B](demo/media/rotl_encode.gif)
+
 計算機組織 2026 學期專題。課程說明見 [DevSecOpsLab-CSIE-NPU/2026-Computer-Architecture](https://github.com/DevSecOpsLab-CSIE-NPU/2026-Computer-Architecture)。
 
 > 本 repo 由 fork [Underiger/2026-Computer-Architecture](https://github.com/Underiger/2026-Computer-Architecture) 的 `group-ROTL/` 於 2026-10-08 搬移而來,保留了 commit 歷史。當時的 PR 討論(#1–#7)留在該 fork 中,fork 已不再更新,之後的修改都在本 repo 進行。
@@ -35,6 +37,7 @@ R-type,custom-0(`0001011`)。funct3 / funct7 **待教師分配**,目前為暫定
 │   └── rv32im/               CP2–CP3:組合語言、密碼學核心
 ├── tools/                    黃金模型、RV32IM 模擬器、量測腳本、Python 測試
 ├── experiments/              效能驗證:IC 交叉驗證、5 級 pipeline 模型、ARM64 實機量測
+├── demo/                     簡報 Demo:Claude 吉祥物桌寵、動畫影片(media/)
 └── report/
     ├── CP1.md  CP2.md  CP3.md
     └── figures/              make counts 產生的數據表
@@ -51,6 +54,8 @@ make encode    # 印出 rotl 的機器碼範例
 make asm       # 產生編譯器輸出的組合語言 build/rotl_O0.s、build/rotl_O2.s
 make ub-demo   # 反例:未處理 n = 0 的寫法(預期報錯)
 make verify    # 效能驗證(見 experiments/README.md;ARM64 實機量測只在 ARM64 電腦執行)
+make pet       # 簡報 Demo:Claude 吉祥物桌寵(見 demo/README.md,需要 macOS,會自動安裝 PyQt6 到 .venv)
+make media     # 重新輸出 demo/media/ 的動畫影片(需要 ffmpeg)
 ```
 
 ## 目前結果
