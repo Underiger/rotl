@@ -11,3 +11,5 @@ make test-c       # 編譯並執行 test_rotl
 make test-ubsan   # 同一組測試加上 -fsanitize=undefined
 make ub-demo      # 反例(n = 0 時預期報錯)
 ```
+
+`rotl.c` 也會被 RISC-V 工具鏈編譯,作為 CP2 的「編譯器基準」(見 `../rv32im/vectors_main.c`)。
