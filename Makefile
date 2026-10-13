@@ -7,7 +7,7 @@ RV_FLAGS = -march=rv32im -mabi=ilp32 -ffreestanding -Isrc/include
 BUILD   = build
 VECTORS = src/tests/rotl_vectors.csv
 
-.PHONY: all test test-c test-ubsan test-py ub-demo asm counts encode verify clean
+.PHONY: all test test-c test-ubsan test-py ub-demo asm counts encode verify pet media clean
 
 all: test
 
@@ -58,6 +58,19 @@ verify: | $(BUILD)
 		$(CC) -O2 -std=gnu11 -Wall -Wextra -Werror -o $(BUILD)/arm64_rotate_bench experiments/arm64_rotate_bench.c && \
 		./$(BUILD)/arm64_rotate_bench; \
 	else echo "skip arm64_rotate_bench: not an ARM64 machine"; fi
+
+# 簡報 Demo:Claude 吉祥物桌寵與動畫影片(見 demo/README.md,需要 macOS 與 PyQt6)
+VENV = .venv
+
+$(VENV)/bin/python:
+	$(PYTHON) -m venv $(VENV)
+	$(VENV)/bin/pip install -r demo/requirements.txt
+
+pet: $(VENV)/bin/python
+	$(VENV)/bin/python demo/pet.py
+
+media: $(VENV)/bin/python
+	$(VENV)/bin/python demo/render_media.py
 
 $(BUILD):
 	mkdir -p $(BUILD)
