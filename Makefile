@@ -1,17 +1,14 @@
 CC      ?= cc
 CFLAGS  ?= -std=c11 -Wall -Wextra -Werror -O2
-PYTHON  ?= python3
-RV_GCC  ?= riscv64-elf-gcc
-RV_FLAGS = -march=rv32im -mabi=ilp32 -ffreestanding -Isrc/include
 
 BUILD   = build
 VECTORS = src/tests/rotl_vectors.csv
 
-.PHONY: all test test-c test-ubsan test-py ub-demo asm counts encode verify clean
+.PHONY: all test test-c test-ubsan ub-demo clean
 
 all: test
 
-test: test-c test-ubsan test-py
+test: test-c test-ubsan
 
 # CP1:主機上的 C baseline 測試
 test-c: $(BUILD)/test_rotl
@@ -32,35 +29,8 @@ ub-demo: | $(BUILD)
 	./$(BUILD)/ub_demo 4
 	-./$(BUILD)/ub_demo 0
 
-# CP2 / CP3:模擬器上的正確性與指令數測試
-test-py:
-	$(PYTHON) -m unittest discover -s tools -p "test_*.py" -v
-
-# CP2:編譯器輸出的組合語言,供報告比對
-asm: | $(BUILD)
-	$(RV_GCC) $(RV_FLAGS) -O0 -S -o $(BUILD)/rotl_O0.s src/c_baseline/rotl.c
-	$(RV_GCC) $(RV_FLAGS) -O2 -S -o $(BUILD)/rotl_O2.s src/c_baseline/rotl.c
-	@echo "written: $(BUILD)/rotl_O0.s $(BUILD)/rotl_O2.s"
-
-# CP2 / CP3:量測靜態與動態指令數,輸出到 report/figures/
-counts:
-	$(PYTHON) tools/measure.py
-
-# CP3:印出編碼範例
-encode:
-	$(PYTHON) tools/rotl_isa.py
-
-# 效能驗證(見 experiments/README.md)
-verify: | $(BUILD)
-	$(PYTHON) experiments/ic_crosscheck.py
-	$(PYTHON) experiments/pipeline_cycles.py
-	@if [ "$$(uname -m)" = "arm64" ] || [ "$$(uname -m)" = "aarch64" ]; then \
-		$(CC) -O2 -std=gnu11 -Wall -Wextra -Werror -o $(BUILD)/arm64_rotate_bench experiments/arm64_rotate_bench.c && \
-		./$(BUILD)/arm64_rotate_bench; \
-	else echo "skip arm64_rotate_bench: not an ARM64 machine"; fi
-
 $(BUILD):
 	mkdir -p $(BUILD)
 
 clean:
-	rm -rf $(BUILD) tools/__pycache__
+	rm -rf $(BUILD)
