@@ -1,10 +1,15 @@
-# src/c_baseline/(CP1)
+# 15_ROTL/c_baseline/
+
+- 對應 Checkpoint:CP1
+- 內容:C 參考實作(原始碼、與 spec 一致的參考函式)
 
 | 檔案 | 內容 |
 |---|---|
 | `rotl.h` / `rotl.c` | C 參考實作 `uint32_t rotl_ref(uint32_t rs1, uint32_t rs2)`,與規格逐字對應 |
 | `test_rotl.c` | 主機測試:CSV 測資、與逐位旋轉寫法交叉比對、性質檢查 |
 | `ub_demo.c` | 反例:未處理 `n = 0` 的寫法,在 UBSan 下會報出移位 32 的未定義行為 |
+
+以下指令在 repo 根目錄執行:
 
 ```bash
 make test-c       # 編譯並執行 test_rotl

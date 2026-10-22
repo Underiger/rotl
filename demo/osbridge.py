@@ -19,15 +19,15 @@ TEST_LOG = BUILD / "pet_demo.log"
 RUN_TESTS = ROOT / "demo" / "run_tests.sh"
 
 sys.path.insert(0, str(TOOLS))
-import rotl_isa  # noqa: E402  編碼常數從 src/include/rotl_isa.h 讀,與專案共用同一份設定
+import rotl_isa  # noqa: E402  編碼常數從 spec/rotl_isa.h 讀,與專案共用同一份設定
 
 # experiments/README.md「另一次執行」的加速比;不是 ARM64 電腦、或影片輸出時使用
 DOC_SPEEDUPS = [
-    {"name": "ChaCha20 區塊", "speedup": 1.51},
-    {"name": "RC5 金鑰排程", "speedup": 1.35},
+    {"name": "ChaCha20 加密", "speedup": 1.51},
+    {"name": "RC5 準備金鑰", "speedup": 1.35},
     {"name": "RC5 加密", "speedup": 1.32},
 ]
-BENCH_NAMES = {"ChaCha20": "ChaCha20 區塊", "RC5 key": "RC5 金鑰排程", "RC5 encrypt": "RC5 加密"}
+BENCH_NAMES = {"ChaCha20": "ChaCha20 加密", "RC5 key": "RC5 準備金鑰", "RC5 encrypt": "RC5 加密"}
 
 # 偵測到這些指令在跑,桌寵就去爬終端機
 TEST_PATTERNS = ("make test", "test_rotl", "unittest discover", "rv32sim", "run_tests.sh",
@@ -174,7 +174,7 @@ def hardware_lines(info):
         lines.append(("快取", f"L1d {big['l1d']} · L2 {big['l2']}({big['name']})"))
     lines.append(("記憶體", f"{info['mem']} · 分頁 {info['page']} · 快取行 {info['line']}"))
     if info.get("features"):
-        lines.append(("ISA", "FEAT_" + " / ".join(info["features"])))
+        lines.append(("指令集", "FEAT_" + " / ".join(info["features"])))
     return lines
 
 
@@ -345,10 +345,10 @@ def checklist(res):
 
     n = res["py_total"] or 22
     return [
-        (f"C 測資 {res['csv'] or 16} 組", state(res["c_pass"] and res["csv"] is not None)),
-        (f"交叉比對 {res['cross'] or 69000:,} 次", state(res["c_pass"] and res["cross"] is not None)),
-        ("UBSan 無未定義行為", state(res["ubsan"], res["c_pass"])),
-        (f"Python + 模擬器 {min(res['py_ok'], n)}/{n}", state(res["py_pass"], res["ubsan"])),
+        (f"{res['csv'] or 16} 組標準題目都答對", state(res["c_pass"] and res["csv"] is not None)),
+        (f"換一種寫法對答案 {res['cross'] or 69000:,} 次", state(res["c_pass"] and res["cross"] is not None)),
+        ("沒有「結果沒保證」的危險寫法", state(res["ubsan"], res["c_pass"])),
+        (f"模擬 RISC-V 執行 {min(res['py_ok'], n)}/{n} 項", state(res["py_pass"], res["ubsan"])),
     ]
 
 

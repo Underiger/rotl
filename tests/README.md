@@ -1,4 +1,7 @@
-# src/tests/(CP1–CP3)
+# 15_ROTL/tests/
+
+- 對應 Checkpoint:CP1–CP3
+- 內容:測資與預期輸出(至少 10 組,含 3 組以上邊界值)
 
 [`rotl_vectors.csv`](rotl_vectors.csv):16 組測資,欄位為 `id, rs1, rs2, expected, category, note`。
 
@@ -10,6 +13,6 @@
 
 同一份 CSV 由三處讀取:
 
-- `src/c_baseline/test_rotl.c`(主機 C 測試)
+- `c_baseline/test_rotl.c`(主機 C 測試)
 - `tools/test_rotl_isa.py`(黃金模型測試)
 - `tools/test_rv32.py`、`tools/measure.py`(在 RV32 模擬器上執行)

@@ -5,7 +5,9 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src"
+C_BASELINE = ROOT / "c_baseline"
+RV32IM = ROOT / "rv32im"
+SPEC = ROOT / "spec"
 BUILD = ROOT / "build"
 
 RV_GCC = shutil.which("riscv64-elf-gcc")
@@ -19,11 +21,11 @@ RV_CFLAGS = [
     "-fno-optimize-sibling-calls",         # 不做尾呼叫,模擬器才能正確歸屬每個函式的指令數
     "-fno-tree-loop-distribute-patterns",  # 不把迴圈換成 memcpy/memset 呼叫
     "-Wall", "-Wextra", "-Werror",
-    f"-I{SRC / 'include'}", f"-I{SRC / 'c_baseline'}", f"-I{SRC / 'rv32im'}",
-    f"-T{SRC / 'rv32im' / 'link.ld'}", "-Wl,--no-relax", "-Wl,--no-warn-rwx-segments",
+    f"-I{SPEC}", f"-I{C_BASELINE}", f"-I{RV32IM}",
+    f"-T{RV32IM / 'link.ld'}", "-Wl,--no-relax", "-Wl,--no-warn-rwx-segments",
 ]
 
-COMMON = [SRC / "rv32im" / "start.S", SRC / "rv32im" / "runtime.c"]
+COMMON = [RV32IM / "start.S", RV32IM / "runtime.c"]
 
 
 def toolchain_available() -> bool:
@@ -45,9 +47,9 @@ def _compile(out: Path, sources, defines=()) -> Path:
 def build_vectors() -> Path:
     return _compile(BUILD / "vectors.elf", [
         *COMMON,
-        SRC / "rv32im" / "rotl.S",
-        SRC / "c_baseline" / "rotl.c",
-        SRC / "rv32im" / "vectors_main.c",
+        RV32IM / "rotl.S",
+        C_BASELINE / "rotl.c",
+        RV32IM / "vectors_main.c",
     ])
 
 
@@ -55,8 +57,8 @@ def build_kernels(custom: bool) -> Path:
     name = "kernels_custom.elf" if custom else "kernels_base.elf"
     return _compile(BUILD / name, [
         *COMMON,
-        SRC / "rv32im" / "kernels.c",
-        SRC / "rv32im" / "kernels_main.c",
+        RV32IM / "kernels.c",
+        RV32IM / "kernels_main.c",
     ], defines=[f"USE_CUSTOM_ROTL={int(custom)}"])
 
 

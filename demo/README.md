@@ -4,9 +4,11 @@
 
 | 步驟 | 抽出的檔案 | 畫面 | 背後的系統操作 |
 |---|---|---|---|
-| ① 編碼組裝 | `src/include/rotl_isa.h` | 搬運 funct7 / rs2 / rs1 / funct3 / rd / opcode 方塊,組成 `0x1EC5850B` | 編碼來自 `tools/rotl_isa.py`;`riscv64-elf-objdump` 反組譯 `build/kernels_custom.elf`,找出實際編譯出來的 rotl 機器碼 |
-| ② M5 晶片實測 | `experiments/arm64_rotate_bench.c` | 高舉發光晶片,跳出加速比標籤 | `sysctl` 讀晶片、核心叢集、快取、分頁大小;`cc` 編譯後在本機現場執行 benchmark |
-| ③ make test | `Makefile` | 爬上終端機視窗,全數通過時頭頂跳出 All Passed! | AppleScript 開 Terminal、讀視窗位置與輸出;`ps` 偵測測試行程 |
+| ① 指令怎麼變成 0 和 1(編碼) | `spec/rotl_isa.h` | 搬運 funct7 / rs2 / rs1 / funct3 / rd / opcode 方塊,組成 `0x1EC5850B` | 編碼來自 `tools/rotl_isa.py`;`riscv64-elf-objdump` 反組譯 `build/kernels_custom.elf`,找出實際編譯出來的 rotl 機器碼 |
+| ② 在這台電腦上實測快多少 | `experiments/arm64_rotate_bench.c` | 高舉發光晶片,跳出加速比標籤 | `sysctl` 讀晶片、核心叢集、快取、分頁大小;`cc` 編譯後在本機現場執行 benchmark |
+| ③ 自動測試(make test) | `Makefile` | 爬上終端機視窗,全數通過時頭頂跳出 All Passed! | AppleScript 開 Terminal、讀視窗位置與輸出;`ps` 偵測測試行程 |
+
+畫面上的文字都是**白話說明**,給沒學過計算機組織的人也看得懂:專有名詞(funct7、rd、ror 等)保留在方塊與標籤上,旁邊用一句話說明它的用途;檔名、機器碼與實測數字照原樣顯示,方便對照。
 
 ![Clawd 爬上終端機,make test 全數通過](media/make_test_all_passed.gif)
 
@@ -50,7 +52,7 @@ make test
 
 桌寵每秒用 `ps` 檢查一次行程,看到 `make test`、`test_rotl`、`unittest discover` 等指令,就用行程的 tty 找出是哪一個 Terminal 分頁在跑、走過去爬上那個視窗,一邊讀分頁的輸出一邊打勾,全部通過後頭頂跳出 All Passed!。iTerm2 改看最前面的視窗;其他終端機讀不到輸出,吉祥物只會在地上等。
 
-注意:`tools/rv32sim.py` 只是模擬器模組,沒有主程式,直接執行 `python3 tools/rv32sim.py` 不會跑任何測試。69,000 次交叉比對是 `make test` 裡的 C 測試(`src/c_baseline/test_rotl.c`),模擬器的 22 項測試在 `make test-py`。現場請打 `make test`,兩者都會跑到。
+注意:`tools/rv32sim.py` 只是模擬器模組,沒有主程式,直接執行 `python3 tools/rv32sim.py` 不會跑任何測試。69,000 次交叉比對是 `make test` 裡的 C 測試(`c_baseline/test_rotl.c`),模擬器的 22 項測試在 `make test-py`。現場請打 `make test`,兩者都會跑到。
 
 ## 影片(README 與簡報用)
 
@@ -60,9 +62,9 @@ make media        # 等同 .venv/bin/python demo/render_media.py
 
 | 檔案 | 內容 | 長度 |
 |---|---|---:|
-| `media/rotl_encode.{mp4,gif}` | ① 編碼組裝(README 頂部) | 18.7 s |
-| `media/m5_speedup.{mp4,gif}` | ② M5 晶片實測 | 11.5 s |
-| `media/make_test_all_passed.{mp4,gif}` | ③ make test,現場 Demo 出狀況時的備案 | 11 s |
+| `media/rotl_encode.{mp4,gif}` | ① 指令怎麼變成 0 和 1(README 頂部) | 18.7 s |
+| `media/m5_speedup.{mp4,gif}` | ② 在這台電腦上實測快多少 | 11.5 s |
+| `media/make_test_all_passed.{mp4,gif}` | ③ 自動測試,現場 Demo 出狀況時的備案 | 11 s |
 
 MP4 為 1920 x 1080、30 fps;GIF 為 960 x 540、15 fps。需要 `ffmpeg`。
 

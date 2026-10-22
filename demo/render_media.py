@@ -5,7 +5,7 @@
     .venv/bin/python demo/render_media.py --png 12.5 encode   只存某個時間點的 PNG(檢查畫面用)
     .venv/bin/python demo/render_media.py --live chip     晶片場景改用這台電腦現場量到的加速比
 
-場景:encode(① 編碼組裝)、chip(② M5 晶片實測)、terminal(③ make test 的影片備案)。
+場景:encode(① 指令怎麼變成 0 和 1)、chip(② 在這台電腦上實測快多少)、terminal(③ 自動測試的影片備案)。
 晶片場景預設使用 experiments/README.md 記錄的加速比(ChaCha20 1.51x、RC5 加密 1.32x)。
 需要 ffmpeg。
 """
@@ -44,7 +44,7 @@ def terminal_lines():
     lines = []
     for line in (out.stdout + out.stderr).splitlines():
         line = line.replace("\t", " ").rstrip()
-        if not line or line.startswith(("cc ", "./build", "python3 -m")) or line.lstrip().startswith("src/"):
+        if not line or line.startswith(("cc ", "./build", "python3 -m")) or line.lstrip().startswith("c_baseline/"):
             continue
         lines.append(re.sub(r" \(test_[\w.]+\)", "", line))
     return lines, osb.checklist(osb.parse_test_output(text))
