@@ -3,15 +3,15 @@
     rotl rd, rs1, rs2   ->   rd = rs1 循環左移 (rs2 & 31) 位
     格式:R-type,custom-0(opcode 0001011 = 0x0B)
 
-funct3 / funct7 從 src/include/rotl_isa.h 讀取,與 C 和組合語言共用同一份設定。
+funct3 / funct7 從 spec/rotl_isa.h 讀取,與 C 和組合語言共用同一份設定。
 """
 
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-HEADER = ROOT / "src" / "include" / "rotl_isa.h"
-VECTORS_CSV = ROOT / "src" / "tests" / "rotl_vectors.csv"
+HEADER = ROOT / "spec" / "rotl_isa.h"
+VECTORS_CSV = ROOT / "tests" / "rotl_vectors.csv"
 
 MASK32 = 0xFFFF_FFFF
 
@@ -92,6 +92,6 @@ def load_vectors(path: Path = VECTORS_CSV):
 
 if __name__ == "__main__":
     print(f"opcode=0b{OPCODE_CUSTOM0:07b} funct3=0b{FUNCT3_ROTL:03b} funct7=0b{FUNCT7_ROTL:07b}")
-    for rd, rs1, rs2 in ((10, 11, 12), (5, 6, 7), (0, 10, 11)):
+    for rd, rs1, rs2 in ((10, 11, 12), (5, 6, 7), (10, 10, 11)):  # report/CP3.md 2.4 的三個範例
         w = encode_rotl(rd, rs1, rs2)
         print(f"rotl {ABI_NAMES[rd]}, {ABI_NAMES[rs1]}, {ABI_NAMES[rs2]}  ->  0x{w:08X}  {w:032b}")

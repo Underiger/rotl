@@ -44,7 +44,7 @@ def terminal_lines():
     lines = []
     for line in (out.stdout + out.stderr).splitlines():
         line = line.replace("\t", " ").rstrip()
-        if not line or line.startswith(("cc ", "./build", "python3 -m")) or line.lstrip().startswith("src/"):
+        if not line or line.startswith(("cc ", "./build", "python3 -m")) or line.lstrip().startswith("c_baseline/"):
             continue
         lines.append(re.sub(r" \(test_[\w.]+\)", "", line))
     return lines, osb.checklist(osb.parse_test_output(text))

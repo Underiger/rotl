@@ -667,10 +667,10 @@ class FolderScene(Scene):
 
     FOLDER_X, PET_X = 150, 290
     ROWS = [
-        ("instructions/", "語意規格、編碼、測資", None),
-        ("src/", "C 參考實作、RV32IM 組語、核心", None),
-        ("  └ include/rotl_isa.h", "編碼常數(唯一設定來源)", "encode"),
-        ("tools/", "黃金模型、模擬器、量測", None),
+        ("c_baseline/", "C 參考實作與測試", None),
+        ("rv32im/", "RV32IM 組語、密碼學核心", None),
+        ("spec/", "語意規格與編碼", None),
+        ("  └ rotl_isa.h", "編碼常數(唯一設定來源)", "encode"),
         ("experiments/", "IC 驗證、pipeline、ARM64 實測", None),
         ("  └ arm64_rotate_bench.c", "Apple M5 實機量測", "chip"),
         ("report/", "CP1–CP3 報告與數據", None),

@@ -19,7 +19,7 @@ TEST_LOG = BUILD / "pet_demo.log"
 RUN_TESTS = ROOT / "demo" / "run_tests.sh"
 
 sys.path.insert(0, str(TOOLS))
-import rotl_isa  # noqa: E402  編碼常數從 src/include/rotl_isa.h 讀,與專案共用同一份設定
+import rotl_isa  # noqa: E402  編碼常數從 spec/rotl_isa.h 讀,與專案共用同一份設定
 
 # experiments/README.md「另一次執行」的加速比;不是 ARM64 電腦、或影片輸出時使用
 DOC_SPEEDUPS = [

@@ -13,10 +13,10 @@
 - **運算元與定義域**:`rs1` 為任意 32-bit 位元向量;`rs2` 為任意 32-bit 值,只使用低 5 位元
 - **結果範圍**:任意 32-bit 值;`rd` 中 1 的個數與 `rs1` 相同
 - **邊界條件與溢位處理**:`n = 0` 時直接回傳 `rs1`(避免移位 32);旋轉不會溢位;`rs2 ≥ 32` 或為負值時只看低 5 位元;`rd = x0` 時結果丟棄
-- **測試向量**:見 2.4 節的 3 個範例與 [`src/tests/rotl_vectors.csv`](../src/tests/rotl_vectors.csv) 的 16 組(含 10 組邊界值)
+- **測試向量**:見 2.4 節的 3 個範例與 [`tests/rotl_vectors.csv`](../tests/rotl_vectors.csv) 的 16 組(含 10 組邊界值)
 - **對應的 RV32IM baseline 片段與指令數**:無分支版 4 條(`sll`、`neg`、`srl`、`or`);GCC `-O2` 為 5 條(多一條 `andi`);常數旋轉 3 條(`slli`、`srli`、`add`)。詳見 [CP2](CP2.md)
 
-完整規格:[`instructions/ROTL/README.md`](../instructions/ROTL/README.md)
+完整規格:[`spec/README.md`](../spec/README.md)
 
 ### 2.2 虛擬碼
 
@@ -51,7 +51,7 @@ R-type,opcode 為 custom-0:
 | `rd` | [11:7] | 暫存器編號 | 結果 |
 | `opcode` | [6:0] | `0001011` | custom-0(0x0B) |
 
-\* 分配後修改 [`src/include/rotl_isa.h`](../src/include/rotl_isa.h) 的兩行,再執行 `make test counts encode` 重新產生所有機器碼與數據。
+\* 分配後修改 [`spec/rotl_isa.h`](../spec/rotl_isa.h) 的兩行,再執行 `make test counts encode` 重新產生所有機器碼與數據。
 
 ### 2.4 三個範例(含 1 個邊界值)
 
@@ -83,7 +83,7 @@ R-type,opcode 為 custom-0:
 
 機器碼:`0001111 01011 01010 000 01010 0001011` = **`0x1EB5050B`**
 
-這正是 [`src/rv32im/rotl.S`](../src/rv32im/rotl.S) 中 `rotl_custom` 經組譯後,在 `riscv64-elf-objdump` 看到的指令字:
+這正是 [`rv32im/rotl.S`](../rv32im/rotl.S) 中 `rotl_custom` 經組譯後,在 `riscv64-elf-objdump` 看到的指令字:
 
 ```
 84:  1eb5050b   .insn  4, 0x1eb5050b
@@ -124,7 +124,7 @@ RISC-V 已批准的 Zbb 擴充有語意相同的 `rol rd, rs1, rs2`。用 `-marc
 - **同時列出動態與靜態指令數**;以動態為主
 - 編譯器:`riscv64-elf-gcc (GCC) 16.2.0`,`-march=rv32im -mabi=ilp32 -O2`
 - 模擬器:本組的 Python RV32IM 指令集模擬器 [`tools/rv32sim.py`](../tools/rv32sim.py)(Python 3.14.8),只計算指令數,不計 cycle
-- 兩個版本的 C 原始碼完全相同,只差 `rotl32()` 用移位寫法或 `rotl_insn()`(見 [`src/rv32im/kernels.c`](../src/rv32im/kernels.c))
+- 兩個版本的 C 原始碼完全相同,只差 `rotl32()` 用移位寫法或 `rotl_insn()`(見 [`rv32im/kernels.c`](../rv32im/kernels.c))
 - 每次量測都與 RFC 8439、RC5 論文的公開答案比對;結果不一致時量測腳本會中止
 - 依規定,本次**不比較 cycle 數**
 

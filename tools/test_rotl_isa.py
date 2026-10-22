@@ -95,7 +95,7 @@ class TestAssemblerEncoding(unittest.TestCase):
             s, o = Path(d) / "probe.S", Path(d) / "probe.o"
             s.write_text(src)
             subprocess.run([rvbuild.RV_GCC, "-march=rv32im", "-mabi=ilp32",
-                            f"-I{rvbuild.SRC / 'include'}", "-c", str(s), "-o", str(o)], check=True)
+                            f"-I{rvbuild.SPEC}", "-c", str(s), "-o", str(o)], check=True)
             dump = subprocess.run([rvbuild.RV_OBJDUMP, "-d", str(o)], check=True,
                                   capture_output=True, text=True).stdout
         words = [int(m.group(1), 16) for m in re.finditer(r"^\s*[0-9a-f]+:\s+([0-9a-f]{8})\s", dump, re.M)]

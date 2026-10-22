@@ -95,7 +95,7 @@ RC5 金鑰排程為 1.35x、RC5 加密為 1.32x,也都在上表的範圍內。
 
 ## 參考資料
 
-完整書目見 [`instructions/ROTL/README.md`](../instructions/ROTL/README.md#參考資料)。
+完整書目見 [`references/README.md`](../references/README.md)。
 
 | 驗證 | 引用 |
 |---|---|
