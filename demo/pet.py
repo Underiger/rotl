@@ -4,7 +4,7 @@
     .venv/bin/python demo/pet.py --tour     啟動後直接開始導覽
 
 操作:
-  雙擊吉祥物          開始導覽:去桌面拿 rotl 資料夾,依序展示 ① 編碼 ② M5 實測 ③ make test
+  雙擊吉祥物          開始導覽:去桌面拿 rotl 資料夾,依序展示 ① 指令怎麼變成 0 和 1 ② 實測快多少 ③ 自動測試
   左鍵點吉祥物        導覽中:下一步;動畫播放中:快轉;平常:講一個專案小知識
   拖曳                把吉祥物抓起來丟到別的地方
   右鍵 / 選單列圖示    選單:個別展示、硬體資訊、監看終端機、結束
@@ -39,14 +39,15 @@ WALK = 260
 CLIMB = 210
 
 FACTS = [
-    "rotl 只要 1 條指令,RV32IM 無分支版要 4 條",
-    "n = 0 時 rs1 >> 32 是未定義行為,要另外處理!",
-    "ChaCha20 動態指令數 1919 → 1284(1.49x)",
-    "RC5 加密一個區塊:227 → 131 條(1.73x)",
-    "opcode 0001011 是 custom-0,保留給自訂指令",
-    "make test:69,000 次交叉比對全部通過",
-    "5 級 pipeline 模型:cycle 比 1.21x – 1.67x",
-    "M5 實測:ror 比 lsl/lsr/orr 快 1.29x – 1.52x",
+    ["ROTL 是「循環左移」:", "往左推,掉出去的位元從右邊補回來"],
+    ["沒有 ROTL 要 4 條指令才拼得出來,", "有了它 1 條就搞定"],
+    ["轉 0 格是 C 語言的陷阱:", "會變成「右移 32 格」,結果沒有保證"],
+    ["ChaCha20 加密一次,", "要跑的指令從 1919 條減到 1284 條"],
+    ["RC5 加密一次,", "要跑的指令從 227 條減到 131 條"],
+    ["新指令放在 RISC-V 預留的", "「自訂指令專區」,不會跟別的指令撞號"],
+    ["make test 會自動對答案 69,000 次,", "確認每個結果都正確"],
+    ["換算成 CPU 的時脈數,", "大約快 1.2 到 1.7 倍"],
+    ["在這台 M5 上實際計時:", "有旋轉指令快 1.3 到 1.5 倍"],
 ]
 
 
@@ -255,14 +256,14 @@ class Pet:
 
         add("🗂  拿資料夾展示(完整導覽)", lambda: self.start(self.tour(), "tour"))
         menu.addSeparator()
-        add("①  編碼組裝:rotl → 機器碼", lambda: self.start(self.standalone("encode"), "show"))
-        add("②  M5 晶片實測(現場 benchmark)", lambda: self.start(self.standalone("chip"), "show"))
-        add("③  終端機 Demo:make test", lambda: self.start(self.run_terminal(), "terminal"))
+        add("①  指令怎麼變成 0 和 1(編碼)", lambda: self.start(self.standalone("encode"), "show"))
+        add("②  在這台電腦上實測快多少", lambda: self.start(self.standalone("chip"), "show"))
+        add("③  跑自動測試(make test)", lambda: self.start(self.run_terminal(), "terminal"))
         menu.addSeparator()
-        add("💻  硬體資訊(sysctl)", lambda: self.start(self.show_hw(), "show"))
+        add("💻  這台電腦的硬體規格", lambda: self.start(self.show_hw(), "show"))
         add("📂  在 Finder 打開 rotl", lambda: Job(osb.run, ["open", str(osb.ROOT)]))
         menu.addSeparator()
-        self.watch_act = add("偵測終端機的測試指令", self.toggle_watch, True, self.procs is not None)
+        self.watch_act = add("我在終端機跑測試時,Clawd 也來看", self.toggle_watch, True, self.procs is not None)
         add("導覽自動播放(不用點)", lambda c: setattr(self, "auto", c), True, self.auto)
         add("停止目前動作", self.stop)
         menu.addSeparator()
@@ -567,7 +568,7 @@ class Pet:
                 a = self.avail
                 w, h = min(820, a.width() * 0.5), min(500, a.height() * 0.5)
                 left, top = a.left() + 70, a.top() + a.height() * 0.24
-                self.say("我來跑 make test!", 2.5)
+                self.say("我來跑自動測試(make test)!", 2.5)
                 j = yield from self.job(osb.terminal_open, f"clear; sh {shlex.quote(str(osb.RUN_TESTS))}",
                                         (left, top, left + w, top + h))
                 win = j.result
@@ -628,7 +629,7 @@ class Pet:
                 cross, total = res["cross"], res["py_total"]
                 self.badge = {"text": "All Passed!", "t0": self.time, "color": GREEN, "icon": "check"}
                 self.confetti.burst(hx, hy - 50, 70, 620)
-                summary = f"{cross:,} 次交叉比對 + {total} 項測試全數通過" if cross and total else "測試全數通過"
+                summary = f"對答案 {cross:,} 次 + {total} 項測試,全部正確" if cross and total else "測試全部通過"
                 self.say([[("✓ ", GREEN), (summary, INK)]], 6, self.bubble_side())
                 for k in range(5):
                     yield from self.hop(30, "happy")
@@ -718,7 +719,7 @@ class Pet:
         data = yield from self.wait_data()
         hw = data.get("hw") or {}
         self.carry = ("chip",)
-        lines = [[("這台機器(sysctl)", INK)]]
+        lines = [[("這台電腦的規格", INK)]]
         lines += [[(f"{k}  ", MUTED), (v, INK)] for k, v in osb.hardware_lines(hw)]
         self.say(lines, 1e9)
         yield from self.hop(26, "carry")

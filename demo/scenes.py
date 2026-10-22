@@ -179,11 +179,12 @@ class EncodeScene(Scene):
         f = self.f[name]
         if name in ("rd", "rs1", "rs2"):
             abi, num = self.enc["regs"][name]
-            return f"{name} = {abi} = x{num} = {f['bits']}"
+            role = {"rd": "結果要放進", "rs1": "要旋轉的數在", "rs2": "要轉幾格寫在"}[name]
+            return f"{name}:{role} {abi}(第 {num} 號暫存器)→ {f['bits']}"
         return {
-            "funct7": f"funct7 = {f['bits']} · 暫定值,待教師分配",
-            "funct3": f"funct3 = {f['bits']} · 暫定值,待教師分配",
-            "opcode": f"opcode = {f['bits']} · custom-0,RISC-V 保留給自訂指令",
+            "funct7": f"funct7 = {f['bits']}:和 funct3 合起來是這條指令的編號(老師還沒分配,先用暫定值)",
+            "funct3": f"funct3 = {f['bits']}:指令編號的另一半(暫定值)",
+            "opcode": f"opcode = {f['bits']}:custom-0,RISC-V 預留給自訂指令的專區",
         }[name]
 
     # ---- 時間軸 ----
@@ -301,8 +302,8 @@ class EncodeScene(Scene):
         head, rest = asm.split(" ", 1)
         shown = typed(asm, seg(t, 0.0, 0.7))
         self.title(p, [(shown[:len(head)], CLAY), (shown[len(head):], PAPER)],
-                   "rd = rs1 循環左移 (rs2 & 31) 位   ·   R-type 32-bit 指令")
-        self.pill(p, W - 40, 30, "custom-0 · opcode 0001011", CLAY)
+                   "意思:把 a1 往左轉 a2 格,結果放進 a0   ·   一條指令 = 32 個 0 或 1")
+        self.pill(p, W - 40, 30, "custom-0 · 自訂指令專區", CLAY)
 
         self.draw_slots(p, seg(t, 0.2, 0.9))
 
@@ -381,10 +382,10 @@ class EncodeScene(Scene):
             p.setFont(font("mono", 15))
             p.setPen(MUTED)
             p.drawText(QRectF(0, 366, W, 24), Qt.AlignmentFlag.AlignCenter,
-                       typed(f"記憶體中(little-endian):{le}", seg(t, self.t_end + 3.2, self.t_end + 3.8)))
+                       typed(f"存進記憶體時,位元組順序反過來(little-endian):{le}", seg(t, self.t_end + 3.2, self.t_end + 3.8)))
             if self.objdump:
                 ex = self.objdump["examples"][0]
-                line = (f"objdump {self.objdump['elf']}:{self.objdump['count']} 條 rotl · "
+                line = (f"編譯出來的程式裡真的有 {self.objdump['count']} 條 rotl · "
                         f"{ex['addr']:x}: {ex['word']:08x} {ex['asm']}")
                 p.setPen(GREEN)
                 p.drawText(QRectF(0, 394, W, 24), Qt.AlignmentFlag.AlignCenter,
@@ -404,12 +405,12 @@ class EncodeScene(Scene):
                                  with_alpha(GOLD, 1 - ph * 2))
 
         if t < self.INTRO:
-            cap = "把 6 個欄位搬進 32-bit 指令,組出 rotl 的機器碼"
+            cap = "CPU 只看得懂 0 和 1:把 6 塊資訊拼成 32 個位元,就是這條指令的「機器碼」"
         elif t < self.t_end:
             i = int((t - self.INTRO) // self.STEP)
             cap = self.caption_for(self.ORDER[min(i, 5)])
         else:
-            cap = f"{asm}  =  0x{word:08X}   ·   C、組合語言、Python 都讀同一份 rotl_isa.h"
+            cap = f"{asm} 翻成機器碼就是 0x{word:08X}(用 16 進位寫出那 32 個 0 和 1)"
         self.caption(p, cap)
 
 
@@ -442,7 +443,7 @@ class ChipScene(Scene):
 
     def draw(self, p: QPainter, t, wall, card=False):
         self.backdrop(p, card)
-        self.title(p, [("M-series 晶片實測", PAPER)], "ARM64 的 ror(旋轉指令)vs lsl + lsr + orr(只能用移位),其餘程式完全相同",
+        self.title(p, [("在這台電腦上實測", PAPER)], "比一比:有旋轉指令(ror,1 條)vs 沒有(用 3 條移位指令拼出來),其他程式一模一樣",
                    size=28, kind="ui")
         self.pill(p, W - 40, 30, "experiments/arm64_rotate_bench.c", GOLD)
 
@@ -488,7 +489,7 @@ class ChipScene(Scene):
         px0, pw = 520, 400
         p.setFont(font("ui", 15, True))
         p.setPen(PAPER)
-        p.drawText(QRectF(px0, 104, pw, 22), Qt.AlignmentFlag.AlignLeft, "這台機器(sysctl 即時讀取)")
+        p.drawText(QRectF(px0, 104, pw, 22), Qt.AlignmentFlag.AlignLeft, "這台電腦的規格(現場讀取)")
         for i, (label, value) in enumerate(self.hw_lines):
             u = seg(t, 1.5 + i * 0.3, 1.8 + i * 0.3)
             if u <= 0:
@@ -504,7 +505,7 @@ class ChipScene(Scene):
         y0 = 132 + len(self.hw_lines) * 22 + 22
         p.setFont(font("ui", 15, True))
         p.setPen(PAPER)
-        p.drawText(QRectF(px0, y0, pw, 22), Qt.AlignmentFlag.AlignLeft, "相對時間(SHIFT = 1.00,越短越快)")
+        p.drawText(QRectF(px0, y0, pw, 22), Qt.AlignmentFlag.AlignLeft, "花的時間(沒有旋轉指令 = 1.00,越短越快)")
         if charging:
             if t >= 1.6:
                 dots = "." * (1 + int(wall * 3) % 3)
@@ -539,7 +540,7 @@ class ChipScene(Scene):
 
         # 從晶片跳出的加速比標籤
         if not charging:
-            tags = [("ChaCha20 區塊", (128, 214), GOLD, INK), ("RC5 加密", (385, 200), CLAY, QColor("#FFFFFF"))]
+            tags = [("ChaCha20 加密", (128, 214), GOLD, INK), ("RC5 加密", (385, 200), CLAY, QColor("#FFFFFF"))]
             for i, (name, (tx, ty), color, tc) in enumerate(tags):
                 r = self.result(name)
                 if not r:
@@ -552,10 +553,10 @@ class ChipScene(Scene):
                 draw_tag(p, cx, cyy + bob, f"{r['speedup']:.2f}x", name, color, tc, scale=max(0.05, ease_back(u)))
 
         if charging:
-            cap = ("Clawd 正在這台電腦上跑 benchmark(每個核心重複 15 次取最快)" if self.live
-                   else "同一份 C 程式,只差旋轉的寫法:ror 一條 vs lsl/lsr/orr 三條")
+            cap = ("Clawd 正在這台電腦上實際跑一遍(每種跑 15 次,取最快的那次)" if self.live
+                   else "同一份程式,只差旋轉怎麼做:用 1 條旋轉指令,還是用 3 條指令拼出來")
         else:
-            cap = "請看加速比,不要看 ns:絕對時間會隨核心種類與電源狀態變動"
+            cap = "看「快幾倍」就好:秒數本身會因為省電模式等原因變動,但倍數很穩定"
         self.caption(p, cap)
 
 
@@ -577,7 +578,7 @@ class TerminalScene(Scene):
 
     def draw(self, p: QPainter, t, wall, card=False):
         self.backdrop(p, card)
-        self.title(p, [("make test", PAPER)], "C 測資 + 69,000 次交叉比對 + UBSan + Python / RV32IM 模擬器測試",
+        self.title(p, [("make test", PAPER)], "一個指令跑完全部檢查:標準題目、換寫法對答案 69,000 次、危險寫法檢查、模擬 RISC-V",
                    size=28, kind="mono")
         win = self.WIN
         p.save()
@@ -657,7 +658,7 @@ class TerminalScene(Scene):
         self.confetti.draw(p, 4)
         if t >= passed_at:
             draw_badge(p, x, head - 12, "All Passed!", scale=ease_back(seg(t, passed_at, passed_at + 0.45)))
-        self.caption(p, "make test 在 2.5 秒內跑完:69,000 次交叉比對 + 22 項測試全部通過")
+        self.caption(p, "2.5 秒跑完:對答案 69,000 次 + 22 項測試,全部正確")
 
 
 # ====================================================================== 資料夾(桌寵導覽)
@@ -667,14 +668,14 @@ class FolderScene(Scene):
 
     FOLDER_X, PET_X = 150, 290
     ROWS = [
-        ("c_baseline/", "C 參考實作與測試", None),
-        ("rv32im/", "RV32IM 組語、密碼學核心", None),
-        ("spec/", "語意規格與編碼", None),
-        ("  └ rotl_isa.h", "編碼常數(唯一設定來源)", "encode"),
-        ("experiments/", "IC 驗證、pipeline、ARM64 實測", None),
-        ("  └ arm64_rotate_bench.c", "Apple M5 實機量測", "chip"),
-        ("report/", "CP1–CP3 報告與數據", None),
-        ("Makefile", "make test / counts / verify", "terminal"),
+        ("c_baseline/", "C 語言版本(標準答案)", None),
+        ("rv32im/", "沒有新指令時的組合語言寫法", None),
+        ("spec/", "新指令的規格書", None),
+        ("  └ rotl_isa.h", "指令編號只寫在這一個檔案", "encode"),
+        ("experiments/", "驗證是不是真的變快", None),
+        ("  └ arm64_rotate_bench.c", "在 M5 上實際計時", "chip"),
+        ("report/", "三份作業報告與數據", None),
+        ("Makefile", "一鍵執行測試與量測", "terminal"),
     ]
     FILE_LABEL = {"encode": (".h", QColor("#4F9BE8")), "chip": (".c", GOLD), "terminal": ("MK", GREEN)}
 
@@ -694,7 +695,7 @@ class FolderScene(Scene):
 
     def draw(self, p: QPainter, t, wall, card=False):
         self.backdrop(p, card)
-        self.title(p, [("ROTL 自訂指令", PAPER)], "計算機組織 2026 · 32-bit 循環左移 · Clawd 從桌面拿來的資料夾",
+        self.title(p, [("ROTL 自訂指令", PAPER)], "計算機組織 2026 · 我們幫 RISC-V 新增的「循環左移」指令",
                    size=26, kind="ui")
 
         folder_open = seg(t, 0.15, 0.55)
@@ -761,4 +762,4 @@ class FolderScene(Scene):
         self.pet(p, self.PET_X, FLOOR, pose, t, wall, -1 if t < 1.0 else 1)
         if carried:
             draw_file(p, carried[0], carried[1], 4, carried[2], carried[3])
-        self.caption(p, "點 Clawd 繼續:① 編碼組裝 → ② M5 晶片實測 → ③ 終端機 make test")
+        self.caption(p, "點 Clawd 繼續:① 指令怎麼變成 0 和 1 → ② 實測快多少 → ③ 自動測試")
