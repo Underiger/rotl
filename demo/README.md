@@ -4,7 +4,7 @@
 
 | 步驟 | 抽出的檔案 | 畫面 | 背後的系統操作 |
 |---|---|---|---|
-| ① 指令怎麼變成 0 和 1(編碼) | `spec/rotl_isa.h` | 搬運 funct7 / rs2 / rs1 / funct3 / rd / opcode 方塊,組成 `0x1EC5850B` | 編碼來自 `tools/rotl_isa.py`;`riscv64-elf-objdump` 反組譯 `build/kernels_custom.elf`,找出實際編譯出來的 rotl 機器碼 |
+| ① 指令怎麼變成 0 和 1(編碼) | `spec/rotl_isa.h` | 搬運 funct7 / rs2 / rs1 / funct3 / rd / opcode 方塊,組成 `0x00C5850B` | 編碼來自 `tools/rotl_isa.py`;`riscv64-elf-objdump` 反組譯 `build/kernels_custom.elf`,找出實際編譯出來的 rotl 機器碼 |
 | ② 在這台電腦上實測快多少 | `experiments/arm64_rotate_bench.c` | 高舉發光晶片,跳出加速比標籤 | `sysctl` 讀晶片、核心叢集、快取、分頁大小;`cc` 編譯後在本機現場執行 benchmark |
 | ③ 自動測試(make test) | `Makefile` | 爬上終端機視窗,全數通過時頭頂跳出 All Passed! | AppleScript 開 Terminal、讀視窗位置與輸出;`ps` 偵測測試行程 |
 

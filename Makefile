@@ -7,7 +7,7 @@ RV_FLAGS = -march=rv32im -mabi=ilp32 -ffreestanding -Ispec
 BUILD   = build
 VECTORS = tests/rotl_vectors.csv
 
-.PHONY: all test test-c test-ubsan test-py ub-demo asm counts encode verify pet media clean
+.PHONY: all test test-c test-ubsan test-py ub-demo asm counts encode verify pet media clean evidence
 
 all: test
 
@@ -74,6 +74,10 @@ media: $(VENV)/bin/python
 
 $(BUILD):
 	mkdir -p $(BUILD)
+
+# 執行證據:make evidence ID=<學號> → report/figures/run_log_<學號>.txt(見 tools/run_log.py)
+evidence:
+	$(PYTHON) tools/run_log.py $(ID)
 
 clean:
 	rm -rf $(BUILD) tools/__pycache__

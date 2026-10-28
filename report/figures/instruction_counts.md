@@ -1,4 +1,4 @@
-<!-- 由 tools/measure.py 產生,請勿手動修改。riscv64-elf-gcc (GCC) 16.2.0;暫定編碼 funct3=0b000、funct7=0b0001111 -->
+<!-- 由 tools/measure.py 產生,請勿手動修改。riscv64-elf-gcc (GCC) 16.2.0;編碼 funct3=0b000、funct7=0b0000000 -->
 
 ## 表 1:單一 ROTL 運算(呼叫一次函式)
 

@@ -81,10 +81,10 @@
 +----------+-------+-------+------+-------+---------+
 |  funct7  |  rs2  |  rs1  |funct3|  rd   | 0001011 |
 +----------+-------+-------+------+-------+---------+
-  0001111*                   000*
+  0000000                    000
 ```
 
-\* `funct3`、`funct7` 由教師分配,上面是**暫定值**。分配後只需修改 [`spec/rotl_isa.h`](rotl_isa.h) 的兩個 `#define`,再執行 `make test counts`。
+`funct3`、`funct7` 依課程公告為 `000` / `0000000`(全為 0),只寫在 [`spec/rotl_isa.h`](rotl_isa.h) 的兩個 `#define`。
 
 ---
 
@@ -96,6 +96,6 @@
 - 組合語言巨集 `rotl rd, rs1, rs2`(展開為 `.insn r`)
 - C 函式 `rotl_insn(rs1, rs2)`(以 inline assembly 發出一條 `rotl`)
 
-`tools/rotl_isa.py` 也從這個檔案讀取 funct3 / funct7。教師分配編碼後,只需改這裡的兩行。
+`tools/rotl_isa.py` 也從這個檔案讀取 funct3 / funct7。若編碼再調整,只需改這裡的兩行。
 
 參考資料見 [`references/README.md`](../references/README.md)。

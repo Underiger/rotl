@@ -7,6 +7,7 @@
 | `rvbuild.py` | 呼叫 `riscv64-elf-gcc` 編譯 RV32 執行檔到 `build/` |
 | `rv32sim.py` | 精簡 RV32IM 指令集模擬器,計算每個函式的動態指令數與分支數 |
 | `measure.py` | 產生 `report/figures/instruction_counts.{md,csv}` |
+| `run_log.py` | `make evidence ID=<學號>`:把 `make test` 與 `make counts` 的完整輸出與工具版本存成執行證據 |
 | `test_rotl_isa.py` | 黃金模型、CSV、編碼、組譯器輸出一致性的測試 |
 | `test_rv32.py` | 在模擬器上驗證四個版本、兩個核心的正確性與指令數 |
 
