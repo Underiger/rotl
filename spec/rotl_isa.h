@@ -6,12 +6,12 @@
  *
  *   rotl rd, rs1, rs2      rd = rs1 循環左移 (rs2 & 31) 位
  *
- * funct3 / funct7 由教師分配。分配前先用下列暫定值,
- * 分配後只需修改這兩行,C、組合語言與 Python 工具都會讀這個檔案。
+ * funct3 / funct7 依課程公告為 000 / 0000000(全為 0)。
+ * 若之後再調整,只需修改這兩行,C、組合語言與 Python 工具都會讀這個檔案。
  */
 #define ROTL_OPCODE 0x0B /* custom-0 = 0001011 */
-#define ROTL_FUNCT3 0x0  /* 暫定,待教師分配 */
-#define ROTL_FUNCT7 0x0F /* 暫定,待教師分配(0001111,取題號 15) */
+#define ROTL_FUNCT3 0x0  /* 000,依課程公告 */
+#define ROTL_FUNCT7 0x00 /* 0000000,依課程公告 */
 
 #define ROTL_STR_(x) #x
 #define ROTL_STR(x) ROTL_STR_(x)

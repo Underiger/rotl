@@ -182,8 +182,8 @@ class EncodeScene(Scene):
             role = {"rd": "結果要放進", "rs1": "要旋轉的數在", "rs2": "要轉幾格寫在"}[name]
             return f"{name}:{role} {abi}(第 {num} 號暫存器)→ {f['bits']}"
         return {
-            "funct7": f"funct7 = {f['bits']}:和 funct3 合起來是這條指令的編號(老師還沒分配,先用暫定值)",
-            "funct3": f"funct3 = {f['bits']}:指令編號的另一半(暫定值)",
+            "funct7": f"funct7 = {f['bits']}:和 funct3 合起來是這條指令的編號(課程規定全為 0)",
+            "funct3": f"funct3 = {f['bits']}:指令編號的另一半(全為 0)",
             "opcode": f"opcode = {f['bits']}:custom-0,RISC-V 預留給自訂指令的專區",
         }[name]
 

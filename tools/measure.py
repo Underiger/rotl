@@ -98,7 +98,7 @@ def measure_kernels():
 def to_markdown(func_rows, kernel_rows) -> str:
     out = []
     out.append(f"<!-- 由 tools/measure.py 產生,請勿手動修改。{rvbuild.gcc_version()};"
-               f"暫定編碼 funct3=0b{FUNCT3_ROTL:03b}、funct7=0b{FUNCT7_ROTL:07b} -->")
+               f"編碼 funct3=0b{FUNCT3_ROTL:03b}、funct7=0b{FUNCT7_ROTL:07b} -->")
     out.append("")
     out.append("## 表 1:單一 ROTL 運算(呼叫一次函式)")
     out.append("")

@@ -10,13 +10,13 @@
 
 正式語意與測試向量見 [HOMEWORK.md 第六節](https://github.com/DevSecOpsLab-CSIE-NPU/2026-Computer-Architecture/blob/main/HOMEWORK.md#六題目語意規格)。
 
-![Claude 吉祥物把 funct7、rs2、rs1、funct3、rd、opcode 六個欄位搬進 32-bit 指令,組出 rotl a0, a1, a2 的機器碼 0x1EC5850B](demo/media/rotl_encode.gif)
+![Claude 吉祥物把 funct7、rs2、rs1、funct3、rd、opcode 六個欄位搬進 32-bit 指令,組出 rotl a0, a1, a2 的機器碼 0x00C5850B](demo/media/rotl_encode.gif)
 
 ```
 rotl rd, rs1, rs2      n = rs2 & 31;  rd = n == 0 ? rs1 : (rs1 << n) | (rs1 >> (32 − n))
 ```
 
-R-type,custom-0(`0001011`)。funct3 / funct7 **待教師分配**,目前為暫定值(見 [`spec/rotl_isa.h`](spec/rotl_isa.h))。
+R-type,custom-0(`0001011`)。funct3 / funct7 依課程公告為 `000` / `0000000`(見 [`spec/rotl_isa.h`](spec/rotl_isa.h))。
 
 > 本 repo 是組長 repo [yuchi-create/2026-Computer-Architecture](https://github.com/yuchi-create/2026-Computer-Architecture/tree/main/instructions/15_ROTL) 中 `instructions/15_ROTL/` 的獨立副本,**內容以組長 repo 為準**,兩邊只差這幾行說明與路徑。另外放一份是因為桌寵 demo 要「跳到桌面拿資料夾」,專案資料夾必須直接放在桌面上(見 `demo/osbridge.py` 的 `finder_icon_pos`)。CP1 已於 2026-10-13 在本 repo 打 tag [`cp1-submit`](https://github.com/Underiger/rotl/releases/tag/cp1-submit)。
 
@@ -59,6 +59,7 @@ rotl/
 make test      # C 測試 + UBSan + 22 項 Python 測試(含模擬器)
 make counts    # 重新量測指令數,寫入 report/figures/
 make encode    # 印出 rotl 的機器碼範例
+make evidence ID=<學號>   # 執行證據:存到 report/figures/run_log_<學號>.txt
 make asm       # 產生編譯器輸出的組合語言 build/rotl_O0.s、build/rotl_O2.s
 make ub-demo   # 反例:未處理 n = 0 的寫法(預期報錯)
 make verify    # 效能驗證(見 experiments/README.md;ARM64 實機量測只在 ARM64 電腦執行)
